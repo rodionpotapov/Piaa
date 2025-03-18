@@ -72,15 +72,14 @@ def solve_square_legacy(N):
                 # Покрытие готово
                 if count < best[0]:
                     best[0] = count
-                    best[1] = sol.copy()  # копируем текущее решение
-                    best[2] = 1           # сбрасываем счётчик решений
+                    best[1] = sol.copy() 
+                    best[2] = 1          
                 elif count == best[0]:
                     best[2] += 1
                 return
 
             x, y = pos
-            max_s = N - 1  # теоретический максимум
-            # но смысл есть не ставить квадрат больше, чем (N - x) или (N - y)
+            max_s = N - 1 
             max_s = min(max_s, N - x, N - y)
 
             for s in range(max_s, 0, -1):
@@ -91,9 +90,6 @@ def solve_square_legacy(N):
                     sol.pop()
                     place(x, y, s, 0)
 
-        #
-        # Ставим "pre"-квадраты (a, b) из оригинального кода
-        #
         a = (N + 1) // 2
         b = N - a
         pre = [
@@ -101,17 +97,11 @@ def solve_square_legacy(N):
             (N - b + 1, 1, b),
             (1, N - b + 1, b)
         ]
-        # Помещаем их в grid
         for (xx, yy, ss) in pre:
             place(xx - 1, yy - 1, ss, 1)
 
-        # Запускаем рекурсию с count = 0, 
-        # поскольку новые квадраты (sol) пока пусты.
         backtrack(0)
 
-        # На выходе best содержит данные о тех дополнительных квадратах,
-        # которые нужны поверх pre.
-        # Собираем полное решение:
         full_solution = pre + best[1]
         solution_count = len(full_solution)
         variants = best[2]
@@ -138,11 +128,8 @@ def solve_tiling(N, M):
 
     else:
         grid = [[0]*M for _ in range(N)]
-        
-        # best[0] = минимальное количество квадратов
-        # best[1] = одно из лучших решений (список)
-        # best[2] = счётчик ВСЕХ различных решений с этим количеством квадратов
-        best = [float('inf'), [], 0]  # <-- Изм.
+
+        best = [float('inf'), [], 0]  
 
         def find_empty():
             for y in range(N):
@@ -170,8 +157,8 @@ def solve_tiling(N, M):
         def backtrack(count):
             print(f"[Rect Tiling] -> Вход в backtrack (count={count})")
 
-            # Изменяем условие с >= на >, чтобы искать другие решения с тем же числом квадратов
-            if count > best[0]:  # <-- Изм.: только если count >, а не >=
+            # условие с >= на >, чтобы искать другие решения с тем же числом квадратов
+            if count > best[0]:
                 print(f"[Rect Tiling] Пропускаем, т.к. count={count} > {best[0]}")
                 print(f"[Rect Tiling] <- Выход из backtrack (count={count})")
                 return
@@ -191,7 +178,6 @@ def solve_tiling(N, M):
                     # Нашли ещё одно решение с таким же количеством квадратов
                     best[2] += 1
                     print(f"[Rect Tiling] Еще одно решение c {count} квадратами! Теперь их {best[2]}")
-                    # Можно менять best[1], если хотите хранить последнее
                 print(f"[Rect Tiling] <- Выход из backtrack (count={count})")
                 return
 
@@ -214,7 +200,6 @@ def solve_tiling(N, M):
 
         backtrack(0)
         
-        # Возвращаем best[1], но счётчик решений лежит в best[2]
         result = best[1]
 
     if swapped:
@@ -223,8 +208,7 @@ def solve_tiling(N, M):
             rotated.append((y, x, s))
         result = rotated
 
-    # Можно вернуть кортеж: (лучшая_укладка, количество_квадратов, число_вариантов)
-    # или просто результат. Ниже — пример, как вернуть всё.
+
     return result, len(result), best[2]  
 
 
@@ -236,7 +220,6 @@ def visualize_tiling(N, M, squares):
         color = (random.random(), random.random(), random.random())
         rect = Rectangle((x - 1, y - 1), s, s, edgecolor='black', facecolor=color, alpha=0.6)
         ax.add_patch(rect)
-        # Для наглядности нумеруем квадраты в центре
         ax.text((x - 1) + s/2, (y - 1) + s/2,
                 f"{i+1}", color='black', ha='center', va='center', fontsize=8)
     ax.set_aspect('equal', 'box')
@@ -248,7 +231,6 @@ def visualize_tiling(N, M, squares):
 if __name__ == "__main__":
     N, M = map(int, input().split())
 
-    # Теперь solve_tiling возвращает ТРИ значения:
     squares, count_squares, variants = solve_tiling(N, M)
 
     print("\nИтоговое решение:", squares)
