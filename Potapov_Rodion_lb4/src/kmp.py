@@ -45,7 +45,6 @@ def kmp_search(text, pattern):
     print(f"Найденные вхождения: {indices}\n")
     return indices
 
-
 def main():
     pattern = input().rstrip("\n")
     text = input().rstrip("\n")
@@ -63,7 +62,6 @@ def main():
     else:
         print("Выводим все стартовые индексы через запятую:")
         print(",".join(map(str, indices)))
-
 
 if __name__ == "__main__":
     main()
